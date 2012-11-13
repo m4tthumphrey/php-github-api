@@ -29,7 +29,7 @@ abstract class Owner extends AbstractModel
             'team_id'               => null,
             'auto_init'             => false,
             'gitignore_template'    => null
-        ));
+        ), $params);
 
         return $this->api('repo')->post($this->getRepoPath(), $params);
     }
