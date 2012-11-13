@@ -79,4 +79,47 @@ class Repo extends AbstractModel
 
         return $label->remove($name);
     }
+
+    public function keys()
+    {
+        return $this->api('repo')->keys()->all(
+            $this->owner->name,
+            $this->name
+        );
+    }
+
+    public function key($title)
+    {
+        return $this->api('repo')->keys()->show(
+            $this->owner->name,
+            $this->name,
+            $title
+        );
+    }
+
+    public function addKey($title, $key)
+    {
+        return $this->api('repo')->keys()->create(
+            $this->owner->name,
+            $this->name,
+            array(
+                'title' => $title,
+                'key' => $key
+            )
+        );
+    }
+
+    public function updateKey($id, $title, $key)
+    {
+        $deployKey = new DeployKey($this, $id);
+
+        return $deployKey->update($title, $key);
+    }
+
+    public function removeKey($id)
+    {
+        $deployKey = new DeployKey($this, $id);
+
+        return $deployKey->remove();
+    }
 }
