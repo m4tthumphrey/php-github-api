@@ -58,6 +58,22 @@ $repositories = $client->api('user')->repositories('ornicar');
 
 From `$client` object, you can access to all GitHub.
 
+## Model usage (WIP)
+
+```php
+<?php
+
+$org = new Github\Model\Org('screenpages');
+$repo = $org->createRepo('github-api');
+$issue = $repo->createIssue('This is a problem', array(
+    'body' => 'Oh dear, now what?!'
+));
+
+$issue->addLabel('critical');
+
+print_r($issue->labels());
+```
+
 ## Documentation
 
 See the `doc` directory for more detailed documentation.
