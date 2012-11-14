@@ -2,9 +2,9 @@
 
 namespace Github\Model;
 
-class User extends Owner
+class User extends Owner implements OwnerInterface
 {
-    public function getRepoPath()
+    public function getCreateRepoPath()
     {
         return '/user/repos';
     }

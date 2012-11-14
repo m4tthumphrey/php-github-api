@@ -2,10 +2,72 @@
 
 namespace Github\Model;
 
+use Github\Exception;
+
 class Repo extends AbstractModel
 {
-    public $owner;
-    public $name;
+    protected static $_properties = array(
+        'id',
+        'owner',
+        'name',
+        'full_name',
+        'description',
+        'private',
+        'fork',
+        'url',
+        'html_url',
+        'clone_url',
+        'git_url',
+        'ssh_url',
+        'svn_url',
+        'mirror_url',
+        'homepage',
+        'language',
+        'forks',
+        'forks_count',
+        'watchers',
+        'watchers_count',
+        'network_count',
+        'size',
+        'master_branch',
+        'open_issues',
+        'open_issues_count',
+        'has_issues',
+        'has_wiki',
+        'has_downloads',
+        'pushed_at',
+        'created_at',
+        'updated_at',
+        'organization',
+        'parent',
+        'source',
+        'permissions'
+    );
+
+    protected static function fromArray(array $data)
+    {
+        if (!isset($data['owner'])) {
+            throw new Exception\MissingArgumentException(array('owner'));
+        }
+
+        $data['owner'] = Owner::fromArray($data['owner']);
+
+        if (isset($data['organization'])) {
+            $data['organization'] = Org::fromArray($data['organization']);
+        }
+
+        if (isset($data['parent'])) {
+            $data['parent'] = Repo::fromArray($data['parent']);
+        }
+
+        if (isset($data['source'])) {
+            $data['source'] = Repo::fromArray($data['source']);
+        }
+
+        $repo = new Repo($data['owner'], $data['name']);
+
+        return $repo->hydrate($data);
+    }
 
     public function __construct(Owner $owner, $name)
     {
@@ -15,7 +77,12 @@ class Repo extends AbstractModel
 
     public function show()
     {
-        return $this->api('repo')->show($this->owner->name, $this->name);
+        $data = $this->api('repo')->show(
+            $this->owner->login,
+            $this->name
+        );
+
+        return Repo::fromArray($data);
     }
 
     public function createIssue($title, array $params)
@@ -23,7 +90,7 @@ class Repo extends AbstractModel
         $params['title'] = $title;
 
         $issue = $this->api('issue')->create(
-            $this->owner->name,
+            $this->owner->login,
             $this->name,
             $params
         );
@@ -33,37 +100,48 @@ class Repo extends AbstractModel
 
     public function issue($number)
     {
-        return new Issue($this->owner, $this, $number);
+        return new Issue($this, $number);
     }
 
     public function labels()
     {
-        return $this->api('repo')->labels()->all(
-            $this->owner->name,
+        $data = $this->api('repo')->labels()->all(
+            $this->owner->login,
             $this->name
         );
+
+        $labels = array();
+        foreach ($data as $label) {
+            $labels[] = Label::fromArray($this, $label);
+        }
+
+        return $labels;
     }
 
     public function label($name)
     {
-        return $this->api('repo')->labels()->show(
-            $this->owner->name,
+        $data = $this->api('repo')->labels()->show(
+            $this->owner->login,
             $this->name,
             $name
         );
+
+        return Label::fromArray($this, $data);
     }
 
     // Todo: check label doesnt exist
     public function addLabel($name, $color)
     {
-        return $this->api('repo')->labels()->create(
-            $this->owner->name,
+        $data = $this->api('repo')->labels()->create(
+            $this->owner->login,
             $this->name,
             array(
                 'name' => $name,
                 'color' => $color
             )
-       );
+        );
+
+        return Label::fromArray($this, $data);
     }
 
     public function updateLabel($name, $color)
@@ -82,31 +160,42 @@ class Repo extends AbstractModel
 
     public function keys()
     {
-        return $this->api('repo')->keys()->all(
-            $this->owner->name,
+        $data = $this->api('repo')->keys()->all(
+            $this->owner->login,
             $this->name
         );
+
+        $keys = array();
+        foreach ($data as $key) {
+            $keys[] = DeployKey::fromArray($this, $key);
+        }
+
+        return $keys;
     }
 
-    public function key($title)
+    public function key($id)
     {
-        return $this->api('repo')->keys()->show(
-            $this->owner->name,
+        $data = $this->api('repo')->keys()->show(
+            $this->owner->login,
             $this->name,
-            $title
+            $id
         );
+
+        return DeployKey::fromArray($this, $data);
     }
 
     public function addKey($title, $key)
     {
-        return $this->api('repo')->keys()->create(
-            $this->owner->name,
+        $data = $this->api('repo')->keys()->create(
+            $this->owner->login,
             $this->name,
             array(
                 'title' => $title,
                 'key' => $key
             )
         );
+
+        return DeployKey::fromArray($this, $data);
     }
 
     public function updateKey($id, $title, $key)

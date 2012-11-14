@@ -2,9 +2,9 @@
 
 namespace Github\Model;
 
-class Org extends Owner
+class Org extends Owner implements OwnerInterface
 {
-    public function getRepoPath()
+    public function getCreateRepoPath()
     {
         return 'orgs/'.$this->name.'/repos';
     }

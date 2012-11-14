@@ -4,8 +4,19 @@ namespace Github\Model;
 
 class Label extends AbstractModel
 {
-    public $repo;
-    public $name;
+    protected static $_properties = array(
+        'repo',
+        'url',
+        'name',
+        'color'
+    );
+
+    public static function fromArray(Repo $repo, array $data)
+    {
+        $label = new Label($repo, $data['name']);
+
+        return $label->hydrate($data);
+    }
 
     public function __construct(Repo $repo, $name)
     {
@@ -15,7 +26,7 @@ class Label extends AbstractModel
 
     public function update($name, $color)
     {
-        return $this->api('repo')->labels()->update(
+        $data = $this->api('repo')->labels()->update(
             $this->owner->name,
             $this->repo->name,
             $this->name,
@@ -24,15 +35,19 @@ class Label extends AbstractModel
                 'color' => $color
             )
         );
+
+        return Label::fromArray($this->repo, $data);
     }
 
     public function remove()
     {
-        return $this->api('repo')->labels()->remove(
+        $this->api('repo')->labels()->remove(
             $this->owner->name,
             $this->repo->name,
             $this->name
         );
+
+        return true;
     }
 
 }

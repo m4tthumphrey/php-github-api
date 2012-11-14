@@ -1,0 +1,72 @@
+<?php
+
+namespace Github\Model;
+
+class Milestone extends AbstractModel
+{
+    protected static $_properties = array(
+        'issue',
+        'id',
+        'url',
+        'number',
+        'state',
+        'title',
+        'description',
+        'creator',
+        'open_issues',
+        'closed_issues',
+        'created_at',
+        'due_on'
+    );
+
+    public static function fromArray($issue, array $data)
+    {
+        if (isset($data['creator'])) {
+            $data['creator'] = User::fromArray($data['creator']);
+        }
+
+        $milestone = new Milestone($issue, $data['number']);
+
+        return $milestone->hydrate($data);
+    }
+
+    public function __construct(Issue $issue, $number)
+    {
+        $this->issue = $issue;
+        $this->number = $number;
+    }
+
+    public function show()
+    {
+        $data = $this->api('issue')->milestones()->show(
+            $this->issue->repo->owner->login,
+            $this->issue->repo->name,
+            $this->number
+        );
+
+        return Milestone::fromArray($this->issue, $data);
+    }
+
+    public function update(array $data)
+    {
+        $data = $this->api('issue')->milestones()->update(
+            $this->issue->repo->owner->login,
+            $this->issue->repo->name,
+            $this->number,
+            $data
+        );
+
+        return Milestone::fromArray($this->issue, $data);
+    }
+
+    public function remove()
+    {
+        $this->api('issue')->milestones()->remove(
+            $this->issue->repo->owner->login,
+            $this->issue->repo->name,
+            $this->number
+        );
+
+        return true;
+    }
+}

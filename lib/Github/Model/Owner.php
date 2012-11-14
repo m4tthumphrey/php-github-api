@@ -2,13 +2,39 @@
 
 namespace Github\Model;
 
-abstract class Owner extends AbstractModel
+class Owner extends AbstractModel
 {
-    public $name;
+    protected static $_properties = array(
+        'login',
+        'id',
+        'url',
+        'avatar_url',
+        'gravatar_id',
+        'name',
+        'company',
+        'location',
+        'email',
+        'hireable',
+        'bio',
+        'public_repos',
+        'public_gists',
+        'followers',
+        'following',
+        'html_url',
+        'created_at',
+        'type'
+    );
 
-    public function __construct($name)
+    public static function fromArray(array $data)
     {
-        $this->name = $name;
+        $owner = new Owner($data['login']);
+
+        return $owner->hydrate($data);
+    }
+
+    public function __construct($login)
+    {
+        $this->login = $login;
     }
 
     public function repo($name)
@@ -31,8 +57,14 @@ abstract class Owner extends AbstractModel
             'gitignore_template'    => null
         ), $params);
 
-        return $this->api('repo')->post($this->getRepoPath(), $params);
-    }
+        $data = $this->api('repo')->post(
+            $this->getCreateRepoPath(),
+            $params
+        );
 
-    abstract protected function getRepoPath();
+        $repo = new Repo($this, $name);
+        $repo->hydrate($data);
+
+        return $repo;
+    }
 }

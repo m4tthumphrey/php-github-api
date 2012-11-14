@@ -2,14 +2,26 @@
 
 namespace Github\Model;
 
-class DeployKey extends Key
+class DeployKey extends Key implements KeyInterface
 {
-    public $repo;
-    public $id;
+    protected static $_properties = array(
+        'id',
+        'url',
+        'title',
+        'key'
+    );
+
+    public static function fromArray(Repo $repo, array $data)
+    {
+        $key = new DeployKey($repo, $data['id']);
+
+        return $key->hydrate($data);
+    }
 
     public function __construct(Repo $repo, $id)
     {
-        $this->repo = $repo;
+        $this->repo     = $repo;
+        $this->id       = $id;
     }
 
     public function update($title, $key)
