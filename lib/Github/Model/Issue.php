@@ -27,6 +27,8 @@ class Issue extends AbstractModel
 
     public static function fromArray(Repo $repo, array $data)
     {
+        $issue = new Issue($repo, $data['number']);
+
         if (isset($data['user'])) {
             $data['user'] = User::fromArray($data['user']);
         }
@@ -45,14 +47,12 @@ class Issue extends AbstractModel
         }
 
         if (isset($data['milestone'])) {
-
+            $data['milestone'] = Milestone::fromArray($issue, $data['milestone']);
         }
 
         if (isset($data['pull_request'])) {
 
         }
-
-        $issue = new Issue($repo, $data['number']);
 
         return $issue->hydrate($data);
     }
@@ -165,6 +165,22 @@ class Issue extends AbstractModel
         return true;
     }
 
+    public function milestones(array $params = array())
+    {
+        $data = $this->api('issue')->milestones()->all(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $params
+        );
+
+        $milestones = array();
+        foreach ($data as $milestone) {
+            $milestones[] = Milestone::fromArray($this, $milestone);
+        }
+
+        return $milestones;
+    }
+
     public function createMilestone($title, array $params = array())
     {
         $params['title'] = $title;
@@ -190,5 +206,47 @@ class Issue extends AbstractModel
         $milestone = new Milestone($this, $number);
 
         return $milestone->remove();
+    }
+
+    public function addComment($body)
+    {
+        $data = $this->api('issue')->comments()->create(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $this->number,
+            array('body' => $body)
+        );
+
+        return Comment::fromArray($this, $data);
+    }
+
+    public function updateComment($id, $body)
+    {
+        $comment = new Comment($this, $id);
+
+        return $comment->update($body);
+    }
+
+    public function removeComment($id)
+    {
+        $comment = new Comment($this, $id);
+
+        return $comment->remove($id);
+    }
+
+    public function events()
+    {
+        $data = $this->api('issue')->events()->all(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $this->number
+        );
+
+        $events = array();
+        foreach ($data as $event) {
+            $events[] = Event::fromArray($this->repo, $event, $this);
+        }
+
+        return $events;
     }
 }

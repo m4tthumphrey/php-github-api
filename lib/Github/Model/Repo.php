@@ -211,4 +211,30 @@ class Repo extends AbstractModel
 
         return $deployKey->remove();
     }
+
+    public function events()
+    {
+        $data = $this->api('issue')->events()->all(
+            $this->owner->login,
+            $this->name
+        );
+
+        $events = array();
+        foreach ($data as $event) {
+            $events[] = Event::fromArray($this, $event);
+        }
+
+        return $events;
+    }
+
+    public function event($event)
+    {
+        $data = $this->api('issue')->events()->show(
+            $this->owner->login,
+            $this->name,
+            $event
+        );
+
+        return Event::fromArray($this, $data);
+    }
 }
