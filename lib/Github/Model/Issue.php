@@ -57,7 +57,7 @@ class Issue extends AbstractModel
         return $issue->hydrate($data);
     }
 
-    public function __construct(Repo $repo, $number = null)
+    public function __construct(Repo $repo, $number)
     {
         $this->repo     = $repo;
         $this->number   = $number;
