@@ -35,7 +35,7 @@ class Owner extends AbstractModel
 
     public static function fromArray(array $data)
     {
-        $owner = new Owner($data['login']);
+        $owner = new static($data['login']);
 
         return $owner->hydrate($data);
     }
