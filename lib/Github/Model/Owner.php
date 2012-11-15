@@ -12,8 +12,10 @@ class Owner extends AbstractModel
         'gravatar_id',
         'name',
         'company',
+        'blog',
         'location',
         'email',
+        'billing_email',
         'hireable',
         'bio',
         'public_repos',
@@ -22,6 +24,12 @@ class Owner extends AbstractModel
         'following',
         'html_url',
         'created_at',
+        'total_private_repos',
+        'owned_private_repos',
+        'private_gists',
+        'collaborators',
+        'plan',
+        'disk_usage',
         'type'
     );
 

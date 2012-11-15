@@ -44,7 +44,7 @@ class Repo extends AbstractModel
         'permissions'
     );
 
-    protected static function fromArray(array $data)
+    public static function fromArray(array $data)
     {
         if (!isset($data['owner'])) {
             throw new Exception\MissingArgumentException(array('owner'));
@@ -96,6 +96,22 @@ class Repo extends AbstractModel
         );
 
         return $this->getIssue($issue['number']);
+    }
+
+    public function issues(array $params = array())
+    {
+        $data = $this->api('issue')->all(
+            $this->owner->login,
+            $this->name,
+            $params
+        );
+
+        $issues = array();
+        foreach ($data as $issue) {
+            $issues[] = Issue::fromArray($this, $issue);
+        }
+
+        return $issues;
     }
 
     public function issue($number)

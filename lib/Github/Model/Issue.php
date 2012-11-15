@@ -208,6 +208,23 @@ class Issue extends AbstractModel
         return $milestone->remove();
     }
 
+    public function comments($page = 1)
+    {
+        $data = $this->api('issue')->comments()->all(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $this->number,
+            $page
+        );
+
+        $comments = array();
+        foreach ($data as $comment) {
+            $comments[] = Comment::fromArray($this, $comment);
+        }
+
+        return $comments;
+    }
+
     public function addComment($body)
     {
         $data = $this->api('issue')->comments()->create(

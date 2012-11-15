@@ -69,4 +69,20 @@ class Milestone extends AbstractModel
 
         return true;
     }
+
+    public function labels()
+    {
+        $data = $this->api('issue')->milestones()->labels(
+            $this->issue->repo->owner->login,
+            $this->issue->repo->name,
+            $this->number
+        );
+
+        $labels = array();
+        foreach ($data as $label) {
+            $labels[] = Label::fromArray($this->issue->repo, $label);
+        }
+
+        return $labels;
+    }
 }
