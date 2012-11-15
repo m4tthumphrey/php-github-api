@@ -254,6 +254,17 @@ class Repo extends AbstractModel
         return Event::fromArray($this, $data);
     }
 
+    public function createPullRequest(array $params)
+    {
+        $data = $this->api('pull_request')->create(
+            $this->owner->login,
+            $this->name,
+            $params
+        );
+
+        return PullRequest::fromArray($this, $data);
+    }
+
     public function pullRequests($state = null)
     {
         $data = $this->api('pull_request')->all(
