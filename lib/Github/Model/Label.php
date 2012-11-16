@@ -13,7 +13,7 @@ class Label extends AbstractModel
 
     public static function fromArray(Repo $repo, array $data)
     {
-        $label = new Label($repo, $data['name']);
+        $label = Label::factory($repo, $data['name']);
 
         return $label->hydrate($data);
     }

@@ -19,8 +19,6 @@ abstract class AbstractModel
         return static::$_client;
     }
 
-    protected $_data = array();
-
     public static function factory()
     {
         $args = func_get_args();
@@ -35,6 +33,8 @@ abstract class AbstractModel
 
         return $obj->newInstanceArgs($args);
     }
+
+    protected $_data = array();
 
     public function api($api)
     {

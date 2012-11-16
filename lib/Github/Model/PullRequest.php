@@ -41,7 +41,7 @@ class PullRequest extends Issue
 
     public static function fromArray(Repo $repo, array $data)
     {
-        $pull_request = new PullRequest($repo, $data['number']);
+        $pull_request = PullRequest::factory($repo, $data['number']);
 
         if (isset($data['head'])) {
             $data['head'] = Ref::fromArray($data['head']);

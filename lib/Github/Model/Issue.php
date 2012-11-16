@@ -27,7 +27,7 @@ class Issue extends AbstractModel
 
     public static function fromArray(Repo $repo, array $data)
     {
-        $issue = new Issue($repo, $data['number']);
+        $issue = Issue::factory($repo, $data['number']);
 
         if (isset($data['user'])) {
             $data['user'] = User::fromArray($data['user']);
@@ -196,16 +196,12 @@ class Issue extends AbstractModel
 
     public function updateMilestone($number, array $data)
     {
-        $milestone = new Milestone($this, $number);
-
-        return $milestone->update($data);
+        return Milestone::factory($this, $number)->update($data);
     }
 
     public function removeMilestone($number)
     {
-        $milestone = new Milestone($this, $number);
-
-        return $milestone->remove();
+       return Milestone::factory($this, $number)->remove();
     }
 
     public function comments($page = 1)
@@ -239,16 +235,12 @@ class Issue extends AbstractModel
 
     public function updateComment($id, $body)
     {
-        $comment = new Comment($this, $id);
-
-        return $comment->update($body);
+        return Comment::factory($this, $id)->update($body);
     }
 
     public function removeComment($id)
     {
-        $comment = new Comment($this, $id);
-
-        return $comment->remove($id);
+        return Comment::factory($this, $id)->remove($id);
     }
 
     public function events()

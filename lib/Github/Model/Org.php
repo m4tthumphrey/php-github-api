@@ -116,15 +116,11 @@ class Org extends Owner implements OwnerInterface
 
     public function team($id)
     {
-        $team = new Team($this, $id);
-
-        return $team->show();
+        return Team::factory($this, $id)->show();
     }
 
     public function removeTeam($id)
     {
-        $team = new Team($this, $id);
-
-        return $team->remove();
+        return Team::factory($this, $id)->remove();
     }
 }

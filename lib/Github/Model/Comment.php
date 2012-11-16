@@ -16,11 +16,11 @@ class Comment extends AbstractModel
 
     public static function fromArray(Issue $issue, array $data)
     {
+        $comment = Comment::factory($issue, $data['id']);
+
         if (isset($data['user'])) {
             $data['user'] = User::fromArray($data['user']);
         }
-
-        $comment = new Comment($issue, $data['id']);
 
         return $comment->hydrate($data);
     }

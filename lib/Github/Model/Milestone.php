@@ -21,11 +21,11 @@ class Milestone extends AbstractModel
 
     public static function fromArray($issue, array $data)
     {
+        $milestone = Milestone::factory($issue, $data['number']);
+
         if (isset($data['creator'])) {
             $data['creator'] = User::fromArray($data['creator']);
         }
-
-        $milestone = new Milestone($issue, $data['number']);
 
         return $milestone->hydrate($data);
     }

@@ -19,6 +19,8 @@ class Event extends AbstractModel
 
     public static function fromArray(Repo $repo, array $data, Issue $issue = null)
     {
+        $event = Event::factory($repo, $data['event'], $issue);
+
         if (isset($data['actor'])) {
             $data['actor'] = User::fromArray($data['actor']);
         }
@@ -26,8 +28,6 @@ class Event extends AbstractModel
         if (isset($data['issue'])) {
             $data['issue'] = Issue::fromArray($repo, $data['issue']);
         }
-
-        $event = new Event($repo, $data['event'], $issue);
 
         return $event->hydrate($data);
     }

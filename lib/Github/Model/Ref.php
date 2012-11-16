@@ -14,6 +14,8 @@ class Ref extends AbstractModel
 
     public static function fromArray(array $data)
     {
+        $ref = Ref::factory();
+
         if (isset($data['repo'])) {
             $data['repo'] = Repo::fromArray($data['repo']);
         }
@@ -21,8 +23,6 @@ class Ref extends AbstractModel
         if (isset($data['user'])) {
             $data['user'] = User::fromArray($data['user']);
         }
-
-        $ref = new Ref();
 
         return $ref->hydrate($data);
     }

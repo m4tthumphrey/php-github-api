@@ -13,7 +13,7 @@ class DeployKey extends Key implements KeyInterface
 
     public static function fromArray(Repo $repo, array $data)
     {
-        $key = new DeployKey($repo, $data['id']);
+        $key = DeployKey::factory($repo, $data['id']);
 
         return $key->hydrate($data);
     }

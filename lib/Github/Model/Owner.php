@@ -35,9 +35,7 @@ class Owner extends AbstractModel
 
     public static function fromArray(array $data)
     {
-        $owner = new static($data['login']);
-
-        return $owner->hydrate($data);
+        return static::factory($data['login'])->hydrate($data);
     }
 
     public function __construct($login)
@@ -47,7 +45,7 @@ class Owner extends AbstractModel
 
     public function repo($name)
     {
-        return new Repo($this, $name);
+        return Repo::factory($this, $name)->show();
     }
 
     public function createRepo($name, array $params = array())
@@ -70,9 +68,6 @@ class Owner extends AbstractModel
             $params
         );
 
-        $repo = new Repo($this, $name);
-        $repo->hydrate($data);
-
-        return $repo;
+        return Repo::factory($this, $name)->hydrate($data);
     }
 }

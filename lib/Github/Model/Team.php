@@ -16,7 +16,7 @@ class Team extends AbstractModel
 
     public static function fromArray(Org $org, array $data)
     {
-        $team = new Team($org, $data['id']);
+        $team = Team::factory($org, $data['id']);
 
         return $team->hydrate($data);
     }

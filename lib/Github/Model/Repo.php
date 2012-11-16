@@ -47,10 +47,12 @@ class Repo extends AbstractModel
     public static function fromArray(array $data)
     {
         if (!isset($data['owner'])) {
-            throw new Exception\MissingArgumentException(array('owner'));
+            throw new Exception\MissingArgumentException('owner');
         }
 
         $data['owner'] = Owner::fromArray($data['owner']);
+
+        $repo = Repo::factory($data['owner'], $data['name']);
 
         if (isset($data['organization'])) {
             $data['organization'] = Org::fromArray($data['organization']);
@@ -63,8 +65,6 @@ class Repo extends AbstractModel
         if (isset($data['source'])) {
             $data['source'] = Repo::fromArray($data['source']);
         }
-
-        $repo = new Repo($data['owner'], $data['name']);
 
         return $repo->hydrate($data);
     }
@@ -116,7 +116,7 @@ class Repo extends AbstractModel
 
     public function issue($number)
     {
-        return new Issue($this, $number);
+       Issue::factory($this, $number)->show();
     }
 
     public function labels()
@@ -162,16 +162,12 @@ class Repo extends AbstractModel
 
     public function updateLabel($name, $color)
     {
-        $label = new Label($this, $name);
-
-        return $label->update($name, $color);
+         return Label::factory($this, $name)->update($name, $color);
     }
 
     public function removeLabel($name)
     {
-        $label = new Label($this, $name);
-
-        return $label->remove($name);
+        return Label::factory($this, $name)->remove($name);
     }
 
     public function keys()
@@ -216,16 +212,12 @@ class Repo extends AbstractModel
 
     public function updateKey($id, $title, $key)
     {
-        $deployKey = new DeployKey($this, $id);
-
-        return $deployKey->update($title, $key);
+        return DeployKey::factory($this, $id)->update($title, $key);
     }
 
     public function removeKey($id)
     {
-        $deployKey = new DeployKey($this, $id);
-
-        return $deployKey->remove();
+        return DeployKey::factory($this, $id)->remove();
     }
 
     public function events()
@@ -283,15 +275,11 @@ class Repo extends AbstractModel
 
     public function pullRequest($number)
     {
-        $pull_request = new PullRequest($this, $number);
-
-        return $pull_request->show();
+        return PullRequest::factory($this, $number)->show();
     }
 
     public function updatePullRequest($number, array $params)
     {
-        $pull_request = new PullRequest($this, $number);
-
-        return $pull_request->update($params);
+        return PullRequest::factory($this, $number)->update($params);
     }
 }

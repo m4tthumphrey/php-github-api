@@ -18,7 +18,7 @@ class Commit extends AbstractModel
 
     public static function fromArray(Repo $repo, array $data)
     {
-        $commit = new Commit($repo, $data['sha']);
+        $commit = Commit::factory($repo, $data['sha']);
 
         if (isset($data['author'])) {
             $data['author'] = User::fromArray($data['author']);
