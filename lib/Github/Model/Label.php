@@ -27,7 +27,7 @@ class Label extends AbstractModel
     public function update($name, $color)
     {
         $data = $this->api('repo')->labels()->update(
-            $this->owner->name,
+            $this->repo->owner->login,
             $this->repo->name,
             $this->name,
             array(
@@ -42,7 +42,7 @@ class Label extends AbstractModel
     public function remove()
     {
         $this->api('repo')->labels()->remove(
-            $this->owner->name,
+            $this->repo->owner->login,
             $this->repo->name,
             $this->name
         );

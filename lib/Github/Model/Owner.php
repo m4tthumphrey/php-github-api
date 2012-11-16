@@ -51,21 +51,18 @@ class Owner extends AbstractModel
     public function createRepo($name, array $params = array())
     {
         $params = array_merge(array(
-            'name'                  => $name,
             'description'           => null,
             'homepage'              => null,
             'public'                => true,
-            'has_issues'            => true,
-            'has_wiki'              => true,
-            'has_downloads'         => true,
-            'team_id'               => null,
-            'auto_init'             => false,
-            'gitignore_template'    => null
+            'organization'          => null
         ), $params);
 
-        $data = $this->api('repo')->post(
-            $this->getCreateRepoPath(),
-            $params
+        $data = $this->api('repo')->create(
+            $name,
+            $params['description'],
+            $params['homepage'],
+            $params['public'],
+            $params['organization']
         );
 
         return Repo::fromArray($data);

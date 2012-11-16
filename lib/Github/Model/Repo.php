@@ -135,7 +135,7 @@ class Repo extends AbstractModel
 
     public function issue($number)
     {
-       return Issue::factory($this, $number)->show();
+        return Issue::factory($this, $number)->show();
     }
 
     public function labels()
@@ -181,12 +181,21 @@ class Repo extends AbstractModel
 
     public function updateLabel($name, $color)
     {
-         return Label::factory($this, $name)->update($name, $color);
+        return Label::factory($this, $name)->update($name, $color);
     }
 
     public function removeLabel($name)
     {
         return Label::factory($this, $name)->remove($name);
+    }
+
+    public function removeLabels()
+    {
+        foreach ($this->labels() as $label) {
+            $label->remove();
+        }
+
+        return true;
     }
 
     public function keys()

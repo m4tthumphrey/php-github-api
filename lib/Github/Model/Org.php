@@ -4,9 +4,11 @@ namespace Github\Model;
 
 class Org extends Owner implements OwnerInterface
 {
-    public function getCreateRepoPath()
+    public function createRepo($name, array $params = array())
     {
-        return 'orgs/'.$this->name.'/repos';
+        $params['organization'] = $this->login;
+
+        return parent::createRepo($name, $params);
     }
 
     public function show()

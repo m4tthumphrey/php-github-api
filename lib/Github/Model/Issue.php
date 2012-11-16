@@ -201,7 +201,7 @@ class Issue extends AbstractModel
 
     public function removeMilestone($number)
     {
-       return Milestone::factory($this, $number)->remove();
+        return Milestone::factory($this, $number)->remove();
     }
 
     public function comments($page = 1)

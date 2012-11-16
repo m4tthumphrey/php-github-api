@@ -26,7 +26,7 @@ class DeployKey extends Key implements KeyInterface
 
     public function update($title, $key)
     {
-        return $this->api('repo')->keys()->update(
+        $data = $this->api('repo')->keys()->update(
             $this->repo->owner->name,
             $this->repo->name,
             $this->id,
@@ -35,14 +35,18 @@ class DeployKey extends Key implements KeyInterface
                 'key'   => $key
             )
         );
+
+        return DeployKey::fromArray($this->repo, $data);
     }
 
     public function remove()
     {
-        return $this->api('repo')->keys()->remove(
+        $this->api('repo')->keys()->remove(
             $this->repo->owner->name,
             $this->repo->name,
             $this->id
         );
+
+        return true;
     }
 }

@@ -48,9 +48,11 @@ class Team extends AbstractModel
 
     public function remove()
     {
-        return $this->api('organization')->teams()->remove(
+        $this->api('organization')->teams()->remove(
             $this->id
         );
+
+        return true;
     }
 
     public function members()
@@ -69,26 +71,32 @@ class Team extends AbstractModel
 
     public function check($login)
     {
-        return $this->api('organization')->teams()->check(
+        $this->api('organization')->teams()->check(
             $this->id,
             $login
         );
+
+        return true;
     }
 
     public function addMember($login)
     {
-        return $this->api('organization')->teams()->addMember(
+        $this->api('organization')->teams()->addMember(
             $this->id,
             $login
         );
+
+        return true;
     }
 
     public function removeMember($login)
     {
-        return $this->api('organization')->teams()->removeMember(
+        $this->api('organization')->teams()->removeMember(
             $this->id,
             $login
         );
+
+        return true;
     }
 
     public function repositories()
@@ -105,35 +113,49 @@ class Team extends AbstractModel
         return $repos;
     }
 
-    public function repository($login, $repository)
+    public function repository($repository)
     {
+        if ($repository instanceof Repo) {
+            $repository = $repository->name;
+        }
+
         $data = $this->api('organization')->teams()->repository(
             $this->id,
-            $login,
+            $this->org->login,
             $repository
         );
 
         return Repo::fromArray($data);
     }
 
-    public function addRepository($login, $repository)
+    public function addRepository($repository)
     {
-        $data = $this->api('organization')->teams()->addRepository(
+        if ($repository instanceof Repo) {
+            $repository = $repository->name;
+        }
+
+        $this->api('organization')->teams()->addRepository(
             $this->id,
-            $login,
+            $this->org->login,
             $repository
         );
 
-        return Repo::fromArray($data);
+        return true;
     }
 
-    public function removeRepository($login, $repository)
+    public function removeRepository($repository)
     {
-        return $this->api('organization')->teams()->removeRepository(
+        if ($repository instanceof Repo) {
+            $repository = $repository->name;
+        }
+
+        $this->api('organization')->teams()->removeRepository(
             $this->id,
-            $login,
+            $this->org->login,
             $repository
         );
+
+        return true;
     }
 
 }

@@ -13,12 +13,21 @@ class Hook extends AbstractModel
         'events',
         'active',
         'config',
-        'id'
+        'id',
+        'last_response'
     );
 
     public static function fromArray(Repo $repo, array $data)
     {
         $hook = Hook::factory($repo, $data['id']);
+
+        if (isset($data['last_response'])) {
+            $data['last_response'] = (object) $data['last_response'];
+        }
+
+        if (isset($data['config'])) {
+            $data['config'] = (object) $data['config'];
+        }
 
         return $hook->hydrate($data);
     }
@@ -54,20 +63,24 @@ class Hook extends AbstractModel
 
     public function remove()
     {
-        return $this->api('repo')->hooks()->remove(
+        $this->api('repo')->hooks()->remove(
             $this->repo->owner->login,
             $this->repo->name,
             $this->id
         );
+
+        return true;
     }
 
     public function test()
     {
-        return $this->api('repo')->hooks()->test(
+        $this->api('repo')->hooks()->test(
             $this->repo->owner->login,
             $this->repo->name,
             $this->id
         );
+
+        return true;
     }
 
 }
