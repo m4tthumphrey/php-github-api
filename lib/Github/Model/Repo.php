@@ -85,6 +85,25 @@ class Repo extends AbstractModel
         return Repo::fromArray($data);
     }
 
+    public function update(array $params)
+    {
+        $data = $this->api('repo')->update(
+            $this->owner->login,
+            $this->name,
+            $params
+        );
+
+        return Repo::fromArray($data);
+    }
+
+    public function remove()
+    {
+        return $this->api('repo')->remove(
+            $this->owner->login,
+            $this->name
+        );
+    }
+
     public function createIssue($title, array $params)
     {
         $params['title'] = $title;
@@ -281,5 +300,38 @@ class Repo extends AbstractModel
     public function updatePullRequest($number, array $params)
     {
         return PullRequest::factory($this, $number)->update($params);
+    }
+
+    public function languages()
+    {
+        $data = $this->api('repos')->languages(
+            $this->owner->login,
+            $this->name
+        );
+
+        $languages = array();
+        foreach ($data as $language => $id) {
+            $languages[] = Language::fromArray(array(
+                'name' => $language,
+                'size' => $id
+            ));
+        }
+
+        return $languages;
+    }
+
+    public function teams()
+    {
+        $data = $this->api('repos')->teams()->all(
+            $this->owner->login,
+            $this->name
+        );
+
+        $teams = array();
+        foreach ($data as $team) {
+            $teams[] = Team::fromArray($this->owner, $team);
+        }
+
+        return $teams;
     }
 }

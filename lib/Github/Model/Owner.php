@@ -68,6 +68,16 @@ class Owner extends AbstractModel
             $params
         );
 
-        return Repo::factory($this, $name)->hydrate($data);
+        return Repo::fromArray($data);
+    }
+
+    public function updateRepo($name, array $params)
+    {
+        return Repo::factory($this, $name)->update($params);
+    }
+
+    public function removeRepo($name)
+    {
+        return Repo::factory($this, $name)->remove();
     }
 }
