@@ -152,4 +152,34 @@ class PullRequest extends Issue
 
         return (object) $data;
     }
+
+    public function reviewComments()
+    {
+        $data = $this->api('pull_request')->comments()->all(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $this->number
+        );
+
+        $comments = array();
+        foreach ($data as $comment) {
+            $comments[] = ReviewComment::fromArray($this, $comment);
+        }
+
+        return $comments;
+    }
+
+    public function addReviewComment($body, array $params = array())
+    {
+        $params['body'] = $body;
+
+        $data = $this->api('pull_request')->comments()->create(
+            $this->repo->owner->login,
+            $this->repo->name,
+            $this->number,
+            $params
+        );
+
+        return ReviewComment::fromArray($this, $data);
+    }
 }

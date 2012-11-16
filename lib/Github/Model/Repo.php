@@ -116,7 +116,7 @@ class Repo extends AbstractModel
 
     public function issue($number)
     {
-       Issue::factory($this, $number)->show();
+       return Issue::factory($this, $number)->show();
     }
 
     public function labels()

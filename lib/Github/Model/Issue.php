@@ -221,7 +221,7 @@ class Issue extends AbstractModel
         return $comments;
     }
 
-    public function addComment($body)
+    public function addComment($body, array $params = array())
     {
         $data = $this->api('issue')->comments()->create(
             $this->repo->owner->login,

@@ -2,7 +2,7 @@
 
 namespace Github\Model;
 
-class Comment extends AbstractModel
+class Comment extends AbstractModel implements CommentInterface
 {
     protected static $_properties = array(
         'issue',
@@ -29,6 +29,17 @@ class Comment extends AbstractModel
     {
         $this->id       = $id;
         $this->issue    = $issue;
+    }
+
+    public function show()
+    {
+        $data = $this->api('issue')->comments()->show(
+            $this->issue->repo->owner->login,
+            $this->issue->repo->name,
+            $this->id
+        );
+
+        return Comment::fromArray($this->issue, $data);
     }
 
     public function update($body)
