@@ -334,4 +334,81 @@ class Repo extends AbstractModel
 
         return $teams;
     }
+
+    public function addHook($name, array $config, array $events = null, $active = true)
+    {
+        $data = $this->api('repo')->hooks()->create(
+            $this->owner->login,
+            $this->name,
+            array(
+                'name' => $name,
+                'config' => $config,
+                'events' => $events,
+                'active' => $active
+            )
+        );
+
+        return Hook::fromArray($this, $data);
+    }
+
+    public function hook($id)
+    {
+        return Hook::factory($this, $id)->show();
+    }
+
+    public function hooks()
+    {
+        $data = $this->api('repo')->hooks()->all(
+            $this->owner->login,
+            $this->name
+        );
+
+        $hooks = array();
+        foreach ($data as $hook) {
+            $hooks[] = Hook::fromArray($this, $hook);
+        }
+
+        return $hooks;
+    }
+
+    public function updateHook($id, array $params)
+    {
+        return Hook::factory($this, $id)->update($params);
+    }
+
+    public function removeHook($id)
+    {
+        return Hook::factory($this, $id)->remove();
+    }
+
+    public function fork($org = null)
+    {
+        $data = $this->api('repo')->forks()->create(
+            $this->owner->login,
+            $this->name,
+            array(
+                'org' => $org
+            )
+        );
+
+        return Repo::fromArray($data);
+    }
+
+    public function forks($sort = null)
+    {
+        $data = $this->api('repo')->forks()->all(
+            $this->owner->login,
+            $this->name,
+            array(
+                'sort' => $sort
+            )
+        );
+
+        $forks = array();
+        foreach ($data as $fork) {
+            $forks[] = Repo::fromArray($fork);
+        }
+
+        return $forks;
+    }
 }
