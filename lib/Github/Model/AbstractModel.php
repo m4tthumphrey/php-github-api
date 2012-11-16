@@ -19,21 +19,6 @@ abstract class AbstractModel
         return static::$_client;
     }
 
-    public static function factory()
-    {
-        $args = func_get_args();
-        $last = end(array_values($args));
-
-        $obj = new \ReflectionClass(get_called_class());
-
-        if ($last instanceof Client) {
-            $last = array_pop($args);
-            static::client($last);
-        }
-
-        return $obj->newInstanceArgs($args);
-    }
-
     protected $_data = array();
 
     public function api($api)
@@ -41,6 +26,10 @@ abstract class AbstractModel
         return static::client()->api($api);
     }
 
+    /**
+     * @param array $data
+     * @return AbstractModel
+     */
     public function hydrate(array $data = array())
     {
         if (!empty($data)) {

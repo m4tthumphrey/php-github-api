@@ -17,6 +17,11 @@ class Hook extends AbstractModel
         'last_response'
     );
 
+    public static function factory(Repo $repo, $id)
+    {
+        return new Hook($repo, $id);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $hook = Hook::factory($repo, $data['id']);

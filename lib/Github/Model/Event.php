@@ -17,6 +17,11 @@ class Event extends AbstractModel
         'issue'
     );
 
+    public static function factory(Repo $repo, $event, $issue = null)
+    {
+        return new Event($repo, $event, $issue);
+    }
+
     public static function fromArray(Repo $repo, array $data, Issue $issue = null)
     {
         $event = Event::factory($repo, $data['event'], $issue);

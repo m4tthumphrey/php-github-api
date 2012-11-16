@@ -33,6 +33,11 @@ class Owner extends AbstractModel
         'type'
     );
 
+    public static function factory($login)
+    {
+        return new Owner($login);
+    }
+
     public static function fromArray(array $data)
     {
         return static::factory($data['login'])->hydrate($data);
@@ -43,11 +48,17 @@ class Owner extends AbstractModel
         $this->login = $login;
     }
 
+    /**
+     * @return Repo
+     */
     public function repo($name)
     {
         return Repo::factory($this, $name)->show();
     }
 
+    /**
+     * @return Repo
+     */
     public function createRepo($name, array $params = array())
     {
         $params = array_merge(array(
@@ -68,11 +79,17 @@ class Owner extends AbstractModel
         return Repo::fromArray($data);
     }
 
+    /**
+     * @return Repo
+     */
     public function updateRepo($name, array $params)
     {
         return Repo::factory($this, $name)->update($params);
     }
 
+    /**
+     * @return Repo
+     */
     public function removeRepo($name)
     {
         return Repo::factory($this, $name)->remove();

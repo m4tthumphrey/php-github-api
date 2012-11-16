@@ -18,6 +18,11 @@ class ReviewComment extends AbstractModel implements CommentInterface
         '_links'
     );
 
+    public static function factory(PullRequest $pull_request, $id)
+    {
+        return new PullRequest($pull_request, $id);
+    }
+
     public static function fromArray(PullRequest $pull_request, array $data)
     {
         $comment = ReviewComment::factory($pull_request, $data['id']);

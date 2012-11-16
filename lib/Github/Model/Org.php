@@ -4,13 +4,14 @@ namespace Github\Model;
 
 class Org extends Owner implements OwnerInterface
 {
-    public function createRepo($name, array $params = array())
+    public static function factory($login)
     {
-        $params['organization'] = $this->login;
-
-        return parent::createRepo($name, $params);
+        return new Org($login);
     }
 
+    /**
+     * @return Org
+     */
     public function show()
     {
         $data = $this->api('organization')->show(
@@ -20,6 +21,9 @@ class Org extends Owner implements OwnerInterface
         return Org::fromArray($data);
     }
 
+    /**
+     * @return Org
+     */
     public function update(array $params)
     {
         $data = $this->api('organization')->update(
@@ -28,6 +32,16 @@ class Org extends Owner implements OwnerInterface
         );
 
         return Org::fromArray($data);
+    }
+
+    /**
+     * @return Repo
+     */
+    public function createRepo($name, array $params = array())
+    {
+        $params['organization'] = $this->login;
+
+        return parent::createRepo($name, $params);
     }
 
     public function members($type = null)
@@ -90,6 +104,9 @@ class Org extends Owner implements OwnerInterface
         );
     }
 
+    /**
+     * @return Team
+     */
     public function createTeam($name, array $params = array())
     {
         $params['name'] = $name;
@@ -116,6 +133,9 @@ class Org extends Owner implements OwnerInterface
         return $teams;
     }
 
+    /**
+     * @return Team
+     */
     public function team($id)
     {
         return Team::factory($this, $id)->show();

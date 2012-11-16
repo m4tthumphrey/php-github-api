@@ -44,6 +44,14 @@ class Repo extends AbstractModel
         'permissions'
     );
 
+    public static function factory(Owner $owner, $name)
+    {
+        return new Repo($owner, $name);
+    }
+
+    /**
+     * @return Repo
+     */
     public static function fromArray(array $data)
     {
         if (!isset($data['owner'])) {
@@ -75,6 +83,9 @@ class Repo extends AbstractModel
         $this->name     = $name;
     }
 
+    /**
+     * @return Repo
+     */
     public function show()
     {
         $data = $this->api('repo')->show(
@@ -85,6 +96,10 @@ class Repo extends AbstractModel
         return Repo::fromArray($data);
     }
 
+
+    /**
+     * @return Repo
+     */
     public function update(array $params)
     {
         $data = $this->api('repo')->update(
@@ -98,12 +113,17 @@ class Repo extends AbstractModel
 
     public function remove()
     {
-        return $this->api('repo')->remove(
+        $this->api('repo')->remove(
             $this->owner->login,
             $this->name
         );
+
+        return true;
     }
 
+    /**
+     * @return Issue
+     */
     public function createIssue($title, array $params)
     {
         $params['title'] = $title;
@@ -133,6 +153,9 @@ class Repo extends AbstractModel
         return $issues;
     }
 
+    /**
+     * @return Issue
+     */
     public function issue($number)
     {
         return Issue::factory($this, $number)->show();
@@ -153,6 +176,9 @@ class Repo extends AbstractModel
         return $labels;
     }
 
+    /**
+     * @return Issue
+     */
     public function label($name)
     {
         $data = $this->api('repo')->labels()->show(
@@ -164,7 +190,10 @@ class Repo extends AbstractModel
         return Label::fromArray($this, $data);
     }
 
-    // Todo: check label doesnt exist
+    /**
+     * @todo: Check label doesn't exist
+     * @return Label
+     */
     public function addLabel($name, $color)
     {
         $data = $this->api('repo')->labels()->create(
@@ -179,6 +208,9 @@ class Repo extends AbstractModel
         return Label::fromArray($this, $data);
     }
 
+    /**
+     * @return Label
+     */
     public function updateLabel($name, $color)
     {
         return Label::factory($this, $name)->update($name, $color);
@@ -213,6 +245,9 @@ class Repo extends AbstractModel
         return $keys;
     }
 
+    /**
+     * @return DeployKey
+     */
     public function key($id)
     {
         $data = $this->api('repo')->keys()->show(
@@ -224,6 +259,9 @@ class Repo extends AbstractModel
         return DeployKey::fromArray($this, $data);
     }
 
+    /**
+     * @return DeployKey
+     */
     public function addKey($title, $key)
     {
         $data = $this->api('repo')->keys()->create(
@@ -238,6 +276,9 @@ class Repo extends AbstractModel
         return DeployKey::fromArray($this, $data);
     }
 
+    /**
+     * @return DeployKey
+     */
     public function updateKey($id, $title, $key)
     {
         return DeployKey::factory($this, $id)->update($title, $key);
@@ -263,6 +304,9 @@ class Repo extends AbstractModel
         return $events;
     }
 
+    /**
+     * @return Event
+     */
     public function event($event)
     {
         $data = $this->api('issue')->events()->show(
@@ -274,6 +318,9 @@ class Repo extends AbstractModel
         return Event::fromArray($this, $data);
     }
 
+    /**
+     * @return PullRequest
+     */
     public function createPullRequest(array $params)
     {
         $data = $this->api('pull_request')->create(
@@ -301,11 +348,17 @@ class Repo extends AbstractModel
         return $pull_requests;
     }
 
+    /**
+     * @return PullRequest
+     */
     public function pullRequest($number)
     {
         return PullRequest::factory($this, $number)->show();
     }
 
+    /**
+     * @return PullRequest
+     */
     public function updatePullRequest($number, array $params)
     {
         return PullRequest::factory($this, $number)->update($params);
@@ -344,6 +397,9 @@ class Repo extends AbstractModel
         return $teams;
     }
 
+    /**
+     * @return Hook
+     */
     public function addHook($name, array $config, array $events = null, $active = true)
     {
         $data = $this->api('repo')->hooks()->create(
@@ -360,6 +416,9 @@ class Repo extends AbstractModel
         return Hook::fromArray($this, $data);
     }
 
+    /**
+     * @return Hook
+     */
     public function hook($id)
     {
         return Hook::factory($this, $id)->show();
@@ -380,6 +439,9 @@ class Repo extends AbstractModel
         return $hooks;
     }
 
+    /**
+     * @return Hook
+     */
     public function updateHook($id, array $params)
     {
         return Hook::factory($this, $id)->update($params);
@@ -390,6 +452,9 @@ class Repo extends AbstractModel
         return Hook::factory($this, $id)->remove();
     }
 
+    /**
+     * @return Repo
+     */
     public function fork($org = null)
     {
         $data = $this->api('repo')->forks()->create(

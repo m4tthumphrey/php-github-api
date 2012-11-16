@@ -14,6 +14,11 @@ class Team extends AbstractModel
         'repos_count'
     );
 
+    public static function factory(Org $org, $id)
+    {
+        return new Team($org, $id);
+    }
+
     public static function fromArray(Org $org, array $data)
     {
         $team = Team::factory($org, $data['id']);

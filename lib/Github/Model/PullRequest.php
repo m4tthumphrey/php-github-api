@@ -39,6 +39,11 @@ class PullRequest extends Issue
         'user'
     );
 
+    public static function factory(Repo $repo, $number)
+    {
+        return new PullRequest($repo, $number);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $pull_request = PullRequest::factory($repo, $data['number']);

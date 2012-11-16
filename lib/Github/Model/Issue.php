@@ -25,6 +25,11 @@ class Issue extends AbstractModel
         'updated_at'
     );
 
+    public static function factory(Repo $repo, $number)
+    {
+        return new Commit($repo, $number);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $issue = Issue::factory($repo, $data['number']);

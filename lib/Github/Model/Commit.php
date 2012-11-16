@@ -16,6 +16,11 @@ class Commit extends AbstractModel
         'parents'
     );
 
+    public static function factory(Repo $repo, $sha)
+    {
+        return new Commit($repo, $sha);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $commit = Commit::factory($repo, $data['sha']);

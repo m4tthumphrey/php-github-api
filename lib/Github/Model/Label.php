@@ -11,6 +11,11 @@ class Label extends AbstractModel
         'color'
     );
 
+    public static function factory(Repo $repo, $name)
+    {
+        return new Label($repo, $name);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $label = Label::factory($repo, $data['name']);

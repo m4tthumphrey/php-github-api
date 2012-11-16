@@ -19,6 +19,11 @@ class Milestone extends AbstractModel
         'due_on'
     );
 
+    public static function factory(Issue $issue, $number)
+    {
+        return new Milestone($issue, $number);
+    }
+
     public static function fromArray($issue, array $data)
     {
         $milestone = Milestone::factory($issue, $data['number']);

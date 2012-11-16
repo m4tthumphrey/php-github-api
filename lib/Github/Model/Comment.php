@@ -14,6 +14,11 @@ class Comment extends AbstractModel implements CommentInterface
         'updated_at'
     );
 
+    public static function factory(Issue $issue, $id)
+    {
+        return new Comment($issue, $id);
+    }
+
     public static function fromArray(Issue $issue, array $data)
     {
         $comment = Comment::factory($issue, $data['id']);

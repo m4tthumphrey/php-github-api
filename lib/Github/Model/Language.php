@@ -9,6 +9,11 @@ class Language extends AbstractModel
         'size'
     );
 
+    public static function factory(array $data)
+    {
+        return new Language($data);
+    }
+
     public static function fromArray(array $data)
     {
         return Language::factory($data);

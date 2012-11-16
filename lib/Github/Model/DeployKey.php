@@ -11,6 +11,11 @@ class DeployKey extends Key implements KeyInterface
         'key'
     );
 
+    public static function factory(Repo $repo, $id)
+    {
+        return new DeployKey($repo, $id);
+    }
+
     public static function fromArray(Repo $repo, array $data)
     {
         $key = DeployKey::factory($repo, $data['id']);
