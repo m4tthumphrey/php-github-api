@@ -2,7 +2,7 @@
 
 namespace Github\Model;
 
-class PullRequest extends Issue
+class PullRequest extends Issue implements IssueInterface
 {
     protected static $_properties = array(
         'repo',
@@ -12,6 +12,10 @@ class PullRequest extends Issue
         'diff_url',
         'patch_url',
         'issue_url',
+        'review_comment_url',
+        'review_comments_url',
+        'comments_url',
+        'commits_url',
         'number',
         'state',
         'title',

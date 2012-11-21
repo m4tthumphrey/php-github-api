@@ -41,6 +41,40 @@ class Repo extends AbstractModel
         'organization',
         'parent',
         'source',
+        'teams_url',
+        'keys_url',
+        'contributors_url',
+        'merges_url',
+        'statuses_url',
+        'hooks_url',
+        'comments_url',
+        'subscription_url',
+        'labels_url',
+        'branches_url',
+        'assignees_url',
+        'collaborators_url',
+        'forks_url',
+        'contents_url',
+        'milestones_url',
+        'downloads_url',
+        'git_commits_url',
+        'trees_url',
+        'archive_url',
+        'git_refs_url',
+        'compare_url',
+        'subscribers_url',
+        'blobs_url',
+        'issue_events_url',
+        'pulls_url',
+        'commits_url',
+        'events_url',
+        'stargazers_url',
+        'languages_url',
+        'issue_comment_url',
+        'issues_url',
+        'git_tags_url',
+        'notifications_url',
+        'tags_url',
         'permissions'
     );
 
@@ -124,7 +158,7 @@ class Repo extends AbstractModel
     /**
      * @return Issue
      */
-    public function createIssue($title, array $params)
+    public function createIssue($title, array $params = array())
     {
         $params['title'] = $title;
 
@@ -134,7 +168,7 @@ class Repo extends AbstractModel
             $params
         );
 
-        return $this->getIssue($issue['number']);
+        return $this->issue($issue['number']);
     }
 
     public function issues(array $params = array())
@@ -158,7 +192,13 @@ class Repo extends AbstractModel
      */
     public function issue($number)
     {
-        return Issue::factory($this, $number)->show();
+        try {
+            $issue = Issue::factory($this, $number)->show();
+        } catch (\Exception $e) {
+            $issue = PullRequest::factory($this, $number)->show();
+        }
+
+        return $issue;
     }
 
     public function labels()
@@ -484,5 +524,27 @@ class Repo extends AbstractModel
         }
 
         return $forks;
+    }
+
+    public function ref($ref)
+    {
+        $data = $this->api('git_data')->references()->show(
+            $this->owner->login,
+            $this->name,
+            $ref
+        );
+
+        return Ref::fromArray($data);
+    }
+
+    public function removeRef($ref)
+    {
+        $this->api('git_data')->references()->remove(
+            $this->owner->login,
+            $this->name,
+            $ref
+        );
+
+        return true;
     }
 }

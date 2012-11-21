@@ -13,7 +13,10 @@ class Commit extends AbstractModel
         'committer',
         'message',
         'tree',
-        'parents'
+        'parents',
+        'files',
+        'stats',
+        'comments_url'
     );
 
     public static function factory(Repo $repo, $sha)

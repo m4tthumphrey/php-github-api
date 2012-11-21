@@ -2,13 +2,12 @@
 
 namespace Github\Model;
 
-class Issue extends AbstractModel
+class Issue extends AbstractModel implements IssueInterface
 {
     protected static $_properties = array(
         'id',
         'repo',
         'url',
-        'html_url',
         'number',
         'state',
         'title',
@@ -22,12 +21,16 @@ class Issue extends AbstractModel
         'closed_at',
         'closed_by',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'comments_url',
+        'events_url',
+        'html_url',
+        'labels_url'
     );
 
     public static function factory(Repo $repo, $number)
     {
-        return new Commit($repo, $number);
+        return new Issue($repo, $number);
     }
 
     public static function fromArray(Repo $repo, array $data)
@@ -56,7 +59,8 @@ class Issue extends AbstractModel
         }
 
         if (isset($data['pull_request'])) {
-
+            $data['pull_request']['number'] = $data['number'];
+            $data['pull_request'] = PullRequest::fromArray($issue->repo, $data['pull_request']);
         }
 
         return $issue->hydrate($data);
@@ -127,19 +131,27 @@ class Issue extends AbstractModel
 
     public function addLabel($name)
     {
+        if ($this->hasLabel($name)) {
+            return $this->labels();
+        }
+
         return $this->addLabels(array($name));
     }
 
     public function removeLabel($name)
     {
-        $data = $this->api('issue')->labels()->remove(
+        if (!$this->hasLabel($name)) {
+            return true;
+        }
+
+        $this->api('issue')->labels()->remove(
             $this->repo->owner->login,
             $this->repo->name,
             $this->number,
             $name
         );
 
-        return Label::fromArray($this->repo, $data);
+        return true;
     }
 
     public function replaceLabels(array $labels)
@@ -168,6 +180,17 @@ class Issue extends AbstractModel
         );
 
         return true;
+    }
+
+    public function hasLabel($label_name)
+    {
+        foreach ($this->labels() as $label) {
+            if ($label_name == $label->name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function milestones(array $params = array())
@@ -262,5 +285,10 @@ class Issue extends AbstractModel
         }
 
         return $events;
+    }
+
+    public function close()
+    {
+        return $this->update(array('state' => 'closed'));
     }
 }

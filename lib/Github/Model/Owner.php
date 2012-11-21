@@ -30,6 +30,16 @@ class Owner extends AbstractModel
         'collaborators',
         'plan',
         'disk_usage',
+        'followers_url',
+        'events_url',
+        'repos_url',
+        'received_events_url',
+        'following_url',
+        'starred_url',
+        'subscriptions_url',
+        'organizations_url',
+        'teams_url',
+        'gists_url',
         'type'
     );
 

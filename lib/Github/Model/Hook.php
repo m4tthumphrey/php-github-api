@@ -14,7 +14,8 @@ class Hook extends AbstractModel
         'active',
         'config',
         'id',
-        'last_response'
+        'last_response',
+        'test_url'
     );
 
     public static function factory(Repo $repo, $id)
@@ -32,6 +33,10 @@ class Hook extends AbstractModel
 
         if (isset($data['config'])) {
             $data['config'] = (object) $data['config'];
+        }
+
+        if (isset($data['last_response'])) {
+            $data['last_response'] = (object) $data['last_response'];
         }
 
         return $hook->hydrate($data);

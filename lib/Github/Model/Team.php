@@ -11,22 +11,24 @@ class Team extends AbstractModel
         'name',
         'permission',
         'members_count',
-        'repos_count'
+        'repos_count',
+        'repositories_url',
+        'members_url'
     );
 
-    public static function factory(Org $org, $id)
+    public static function factory(Owner $org, $id)
     {
         return new Team($org, $id);
     }
 
-    public static function fromArray(Org $org, array $data)
+    public static function fromArray(Owner $org, array $data)
     {
         $team = Team::factory($org, $data['id']);
 
         return $team->hydrate($data);
     }
 
-    public function __construct(Org $org, $id)
+    public function __construct(Owner $org, $id)
     {
         $this->org  = $org;
         $this->id   = $id;
@@ -76,12 +78,16 @@ class Team extends AbstractModel
 
     public function check($login)
     {
-        $this->api('organization')->teams()->check(
-            $this->id,
-            $login
-        );
+        try {
+            $this->api('organization')->teams()->check(
+                $this->id,
+                $login
+            );
 
-        return true;
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function addMember($login)
