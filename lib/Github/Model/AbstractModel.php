@@ -21,6 +21,11 @@ abstract class AbstractModel
 
     protected $_data = array();
 
+    public function setClient(Client $client)
+    {
+        return static::client($client);
+    }
+
     public function api($api)
     {
         return static::client()->api($api);
